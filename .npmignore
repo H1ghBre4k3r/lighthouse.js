@@ -1,0 +1,27 @@
+## Test stuff
+test
+*.spec.*
+.nyc*
+coverage
+
+## Editor and ts stuff
+.prettierrc
+tsconfig.json
+tslint.json
+.eslintrc.js
+
+## Git stuff
+.gitlab-ci.yml
+CHANGELOG.md
+CONTRIBUTING.md
+CODE_OF_CONDUCT.md
+.github
+
+## npm stuff
+*.tgz
+
+## source code
+src
+webpack.*
+*.map
+example
