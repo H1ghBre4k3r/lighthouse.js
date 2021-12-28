@@ -1,1 +1,1 @@
-console.log("Hello, Lighthouse!");
+export * from "./LighthouseWebsocket";
