@@ -1,3 +1,4 @@
+/* eslint-disable no-await-in-loop */
 import { config } from "dotenv";
 import { LighthouseAuth, LighthouseWebsocket } from "lighthouse.js";
 
@@ -24,10 +25,12 @@ async function sleep(time: number) {
     while (true) {
         // eslint-disable-next-line no-loop-func
         const data = new Array(28 * 14 * 3).fill(0).map((_, j) => (j % 3 === i ? 255 : 0));
-        lh.send(data);
+        const msg = await lh.send(data);
+
+        // eslint-disable-next-line no-console
+        console.log(msg);
         i += 1;
         i %= 3;
-        // eslint-disable-next-line no-await-in-loop
         await sleep(1000 / 5);
     }
 })();
