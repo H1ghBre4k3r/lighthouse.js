@@ -24,4 +24,4 @@ CODE_OF_CONDUCT.md
 src
 webpack.*
 *.map
-example
+example*
