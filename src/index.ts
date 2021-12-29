@@ -1,1 +1,2 @@
-export * from "./LighthouseWebsocket";
+export * from "./Lighthouse/LighthouseWebsocket";
+export * from "./Lighthouse/types";

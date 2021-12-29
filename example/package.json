@@ -1,0 +1,21 @@
+{
+    "name": "example",
+    "version": "1.0.0",
+    "description": "",
+    "main": "build/index.js",
+    "scripts": {
+        "build": "tsc",
+        "start": "node .",
+        "build:start": "npm run build && npm run start"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "MIT",
+    "dependencies": {
+        "dotenv": "^10.0.0",
+        "lighouse.js": "../"
+    },
+    "devDependencies": {
+        "@types/dotenv": "^8.2.0"
+    }
+}

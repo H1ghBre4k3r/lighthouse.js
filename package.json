@@ -1,6 +1,6 @@
 {
     "name": "lighthouse.js",
-    "version": "0.2.0",
+    "version": "0.1.0",
     "description": "JavaScript wrapper around the Lighthouse API",
     "main": "build/index.js",
     "scripts": {
@@ -33,6 +33,7 @@
     "homepage": "https://github.com/H1ghBre4k3r/lighthouse.js#readme",
     "devDependencies": {
         "@types/node": "^17.0.5",
+        "@types/uuid": "^8.3.3",
         "@typescript-eslint/eslint-plugin": "^5.8.0",
         "@typescript-eslint/parser": "^5.8.0",
         "dts-bundle-webpack": "^1.0.2",
@@ -52,6 +53,7 @@
     "dependencies": {
         "@msgpack/msgpack": "^2.7.1",
         "@types/ws": "^8.2.2",
+        "uuid": "^8.3.2",
         "ws": "^8.4.0"
     }
 }
