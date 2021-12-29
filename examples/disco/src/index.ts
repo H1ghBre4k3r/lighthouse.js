@@ -1,5 +1,5 @@
 import { config } from "dotenv";
-import { LighthouseAuth, LighthouseWebsocket } from "lighouse.js";
+import { LighthouseAuth, LighthouseWebsocket } from "lighthouse.js";
 
 config();
 
