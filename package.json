@@ -1,5 +1,5 @@
 {
-    "name": "lighthouse.js",
+    "name": "@h1ghbre4k3r/lighthouse.js",
     "version": "0.1.0",
     "description": "JavaScript wrapper around the CAU Lighthouse API",
     "main": "build/index.js",
