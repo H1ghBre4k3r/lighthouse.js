@@ -6,7 +6,7 @@ import { LighthouseAuth, RequestPayload, ResponsePayload } from "./types";
 type ResponseHandler = (data: ResponsePayload) => void;
 
 export class LighthouseWebsocket<U extends string> {
-    private static readonly serverAdress = "wss://lighthouse.uni-kiel.de/websocket";
+    private static readonly serverAddress = "wss://lighthouse.uni-kiel.de/websocket";
 
     private ws?: WebSocket;
 
@@ -16,8 +16,8 @@ export class LighthouseWebsocket<U extends string> {
         this.responseHandlers = new Map<string, ResponseHandler>();
     }
 
-    public async open(adress = LighthouseWebsocket.serverAdress): Promise<number> {
-        this.ws = new WebSocket(adress);
+    public async open(address = LighthouseWebsocket.serverAddress): Promise<number> {
+        this.ws = new WebSocket(address);
 
         this.ws.on("message", (data) => {
             const response: ResponsePayload = decode(new Uint8Array(data as Buffer)) as ResponsePayload;
