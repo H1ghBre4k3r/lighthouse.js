@@ -45,7 +45,7 @@ export class LighthouseWebsocket<U extends string> {
         return await this.send("STREAM", ["user", this.auth.USER, "model"], undefined);
     }
 
-    private async send<P>(verb: LighthouseVerb, path: LighthousePath<U>, payload: P) {
+    private async send<P>(verb: LighthouseVerb, path: LighthousePath<U>, payload: P): Promise<LighthouseEvent<unknown>> {
         const id = uuid();
         const data: LighthouseRequest<U, P> = {
             AUTH: this.auth,
