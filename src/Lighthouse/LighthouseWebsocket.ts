@@ -1,26 +1,26 @@
 import { decode, encode } from "@msgpack/msgpack";
 import { v4 as uuid } from "uuid";
 import { WebSocket } from "ws";
-import { LighthouseAuth, RequestPayload, ResponsePayload } from "./types";
+import { LighthouseAuth, LighthouseRequest, LighthouseEvent } from "./types";
 
-type ResponseHandler = (data: ResponsePayload) => void;
+type LighthouseEventHandler<P> = (data: LighthouseEvent<P>) => void;
 
 export class LighthouseWebsocket<U extends string> {
     private static readonly serverAddress = "wss://lighthouse.uni-kiel.de/websocket";
 
     private ws?: WebSocket;
 
-    private responseHandlers: Map<string, ResponseHandler>;
+    private responseHandlers: Map<string, LighthouseEventHandler<unknown>>;
 
     constructor(private readonly auth: LighthouseAuth<U>) {
-        this.responseHandlers = new Map<string, ResponseHandler>();
+        this.responseHandlers = new Map<string, LighthouseEventHandler<unknown>>();
     }
 
     public async open(address = LighthouseWebsocket.serverAddress): Promise<number> {
         this.ws = new WebSocket(address);
 
         this.ws.on("message", (data) => {
-            const response: ResponsePayload = decode(new Uint8Array(data as Buffer)) as ResponsePayload;
+            const response = decode(new Uint8Array(data as Buffer)) as LighthouseEvent<unknown>;
             const handler = this.responseHandlers.get(response.REID);
             if (handler && typeof handler === "function") {
                 handler(response);
@@ -34,18 +34,18 @@ export class LighthouseWebsocket<U extends string> {
         });
     }
 
-    public async send(payload: number[]): Promise<ResponsePayload> {
+    public async send<P>(payload: P): Promise<LighthouseEvent<P>> {
         const id = uuid();
-        const data: RequestPayload<U> = {
+        const data: LighthouseRequest<U, P> = {
             AUTH: this.auth,
             META: {},
             PATH: ["user", this.auth.USER, "model"],
-            PAYL: new Uint8Array(payload),
+            PAYL: payload,
             REID: id,
             VERB: "PUT",
         };
         if (this.ws?.readyState === WebSocket.OPEN) {
-            const prom = new Promise<ResponsePayload>((res) => {
+            const prom = new Promise<LighthouseEvent<P>>((res) => {
                 this.registerResponseHandler(id, res);
             });
             this.ws?.send(encode(data));
@@ -54,8 +54,8 @@ export class LighthouseWebsocket<U extends string> {
         throw new Error("Websocket is currently not open!");
     }
 
-    private registerResponseHandler(id: string, cb: ResponseHandler) {
-        this.responseHandlers.set(id, cb);
+    private registerResponseHandler<P>(id: string, cb: LighthouseEventHandler<P>) {
+        this.responseHandlers.set(id, cb as LighthouseEventHandler<unknown>);
     }
 
     public close(): void {
