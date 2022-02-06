@@ -47,7 +47,7 @@ export class LighthouseWebsocket<U extends string> {
 
     private async send<P>(verb: LighthouseVerb, path: LighthousePath<U>, payload: P): Promise<LighthouseEvent<unknown>> {
         const id = uuid();
-        const data: LighthouseRequest<U, P> = {
+        const request: LighthouseRequest<U, P> = {
             AUTH: this.auth,
             META: {},
             PATH: path,
@@ -56,10 +56,16 @@ export class LighthouseWebsocket<U extends string> {
             VERB: verb,
         };
         if (this.ws?.readyState === WebSocket.OPEN) {
-            const prom = new Promise<LighthouseEvent<unknown>>((res) => {
-                this.registerResponseHandler(id, res);
+            const prom = new Promise<LighthouseEvent<unknown>>((resolve, reject) => {
+                this.registerResponseHandler(id, response => {
+                    if (response.RNUM === 200) {
+                        resolve(response);
+                    } else {
+                        reject(`${response.RNUM} ${response.RESPONSE}`);
+                    }
+                });
             });
-            this.ws?.send(encode(data));
+            this.ws?.send(encode(request));
             return prom;
         }
         throw new Error("Websocket is currently not open!");
