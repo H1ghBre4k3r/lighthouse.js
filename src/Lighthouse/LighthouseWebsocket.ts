@@ -37,8 +37,12 @@ export class LighthouseWebsocket<U extends string> {
         });
     }
 
-    public async sendDisplay(rgbValues: number[]): Promise<LighthouseEvent<unknown>> {
-        return await this.send("PUT", ["user", this.auth.USER, "model"], new Uint8Array(rgbValues));
+    public async sendDisplay(rgbValues: Uint8Array): Promise<LighthouseEvent<unknown>> {
+        return await this.send("PUT", ["user", this.auth.USER, "model"], rgbValues);
+    }
+
+    public async requestStream(): Promise<LighthouseEvent<unknown>> {
+        return await this.send("STREAM", ["user", this.auth.USER, "model"], undefined);
     }
 
     private async send<P>(verb: LighthouseVerb, path: LighthousePath<U>, payload: P) {
