@@ -3,18 +3,17 @@ import { v4 as uuid } from "uuid";
 import { WebSocket } from "ws";
 import { LighthouseAuth, LighthouseRequest, LighthouseEvent } from "./types";
 
-type LighthouseEventHandler<P> = (data: LighthouseEvent<P>) => void;
+type LighthouseEventHandler<P> = (event: LighthouseEvent<P>) => void;
 
 export class LighthouseWebsocket<U extends string> {
     private static readonly serverAddress = "wss://lighthouse.uni-kiel.de/websocket";
 
     private ws?: WebSocket;
 
-    private responseHandlers: Map<string, LighthouseEventHandler<unknown>>;
+    private responseHandlers: Map<string, LighthouseEventHandler<unknown>> = new Map();
+    private eventHandlers: LighthouseEventHandler<unknown>[] = [];
 
-    constructor(private readonly auth: LighthouseAuth<U>) {
-        this.responseHandlers = new Map<string, LighthouseEventHandler<unknown>>();
-    }
+    constructor(private readonly auth: LighthouseAuth<U>) {}
 
     public async open(address = LighthouseWebsocket.serverAddress): Promise<number> {
         this.ws = new WebSocket(address);
@@ -25,6 +24,10 @@ export class LighthouseWebsocket<U extends string> {
             if (handler && typeof handler === "function") {
                 handler(response);
                 this.responseHandlers.delete(response.REID);
+            } else {
+                for (const handler of this.eventHandlers) {
+                    handler(response);
+                }
             }
         });
         return new Promise<number>((res) => {
@@ -56,6 +59,10 @@ export class LighthouseWebsocket<U extends string> {
 
     private registerResponseHandler<P>(id: string, cb: LighthouseEventHandler<P>) {
         this.responseHandlers.set(id, cb as LighthouseEventHandler<unknown>);
+    }
+
+    private registerEventHandler<P>(cb: LighthouseEventHandler<P>) {
+        this.eventHandlers.push(cb as LighthouseEventHandler<unknown>);
     }
 
     public close(): void {
