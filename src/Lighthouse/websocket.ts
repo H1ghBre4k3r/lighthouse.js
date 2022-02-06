@@ -9,6 +9,7 @@ export class LighthouseWebsocket<U extends string> {
     private static readonly serverAddress = "wss://lighthouse.uni-kiel.de/websocket";
 
     private ws?: WebSocket;
+    private streamRequested: boolean = false;
 
     private responseHandlers: Map<string, LighthouseEventHandler<unknown>> = new Map();
     private eventHandlers: LighthouseEventHandler<unknown>[] = [];
@@ -42,10 +43,14 @@ export class LighthouseWebsocket<U extends string> {
     }
 
     public async requestStream(): Promise<LighthouseEvent<unknown>> {
+        this.streamRequested = true;
         return await this.send("STREAM", ["user", this.auth.USER, "model"], undefined);
     }
 
     public addKeyListener(cb: (event: KeyEvent) => void): void {
+        if (!this.streamRequested) {
+            this.requestStream();
+        }
         this.registerEventHandler(raw => {
             const event = raw as LighthouseEvent<KeyEvent>;
             const input = event.PAYL;
@@ -56,6 +61,9 @@ export class LighthouseWebsocket<U extends string> {
     }
 
     public addControllerListener(cb: (event: ControllerEvent) => void): void {
+        if (!this.streamRequested) {
+            this.requestStream();
+        }
         this.registerEventHandler(raw => {
             const event = raw as LighthouseEvent<ControllerEvent>;
             const input = event.PAYL;
