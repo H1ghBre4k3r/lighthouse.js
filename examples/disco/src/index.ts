@@ -4,11 +4,17 @@ import { LighthouseAuth, LighthouseWebsocket } from "lighthouse.js";
 
 config();
 
-const user = process.env.LIGHTHOUSE_USER ?? "";
+function getEnv(name: string): string {
+    const value = process.env[name];
+    if (!value) throw Error(`Environment variable ${name} is not defined!`);
+    return value;
+}
+
+const user = getEnv("LIGHTHOUSE_USER");
 
 const auth: LighthouseAuth<typeof user> = {
     USER: user,
-    TOKEN: process.env.LIGHTHOUSE_TOKEN ?? "",
+    TOKEN: getEnv("LIGHTHOUSE_TOKEN"),
 };
 
 async function sleep(time: number) {
