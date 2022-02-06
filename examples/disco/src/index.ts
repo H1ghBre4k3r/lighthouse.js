@@ -25,7 +25,7 @@ async function sleep(time: number) {
     while (true) {
         // eslint-disable-next-line no-loop-func
         const data = new Array(28 * 14 * 3).fill(0).map((_, j) => (j % 3 === i ? 255 : 0));
-        const msg = await lh.send(data);
+        const msg = await lh.sendDisplay(data);
 
         // eslint-disable-next-line no-console
         console.log(msg);

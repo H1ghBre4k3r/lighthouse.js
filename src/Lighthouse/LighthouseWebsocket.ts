@@ -1,7 +1,7 @@
 import { decode, encode } from "@msgpack/msgpack";
 import { v4 as uuid } from "uuid";
 import { WebSocket } from "ws";
-import { LighthouseAuth, LighthouseRequest, LighthouseEvent } from "./types";
+import { LighthouseAuth, LighthousePath, LighthouseRequest, LighthouseEvent, LighthouseVerb } from "./types";
 
 type LighthouseEventHandler<P> = (event: LighthouseEvent<P>) => void;
 
@@ -37,18 +37,22 @@ export class LighthouseWebsocket<U extends string> {
         });
     }
 
-    public async send<P>(payload: P): Promise<LighthouseEvent<P>> {
+    public async sendDisplay(rgbValues: number[]): Promise<LighthouseEvent<unknown>> {
+        return await this.send("PUT", ["user", this.auth.USER, "model"], new Uint8Array(rgbValues));
+    }
+
+    private async send<P>(verb: LighthouseVerb, path: LighthousePath<U>, payload: P) {
         const id = uuid();
         const data: LighthouseRequest<U, P> = {
             AUTH: this.auth,
             META: {},
-            PATH: ["user", this.auth.USER, "model"],
+            PATH: path,
             PAYL: payload,
             REID: id,
-            VERB: "PUT",
+            VERB: verb,
         };
         if (this.ws?.readyState === WebSocket.OPEN) {
-            const prom = new Promise<LighthouseEvent<P>>((res) => {
+            const prom = new Promise<LighthouseEvent<unknown>>((res) => {
                 this.registerResponseHandler(id, res);
             });
             this.ws?.send(encode(data));
@@ -57,11 +61,11 @@ export class LighthouseWebsocket<U extends string> {
         throw new Error("Websocket is currently not open!");
     }
 
-    private registerResponseHandler<P>(id: string, cb: LighthouseEventHandler<P>) {
+    private registerResponseHandler<P>(id: string, cb: LighthouseEventHandler<P>): void {
         this.responseHandlers.set(id, cb as LighthouseEventHandler<unknown>);
     }
 
-    private registerEventHandler<P>(cb: LighthouseEventHandler<P>) {
+    private registerEventHandler<P>(cb: LighthouseEventHandler<P>): void {
         this.eventHandlers.push(cb as LighthouseEventHandler<unknown>);
     }
 
