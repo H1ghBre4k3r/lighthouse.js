@@ -1,6 +1,6 @@
 /* eslint-disable no-await-in-loop */
 import { config } from "dotenv";
-import { LighthouseAuth, LighthouseWebsocket } from "lighthouse.js";
+import { LighthouseAuth, LighthouseWebsocket, LIGHTHOUSE_WIDTH, LIGHTHOUSE_HEIGHT } from "lighthouse.js";
 
 config();
 
@@ -30,7 +30,7 @@ async function sleep(time: number) {
     // eslint-disable-next-line no-constant-condition
     while (true) {
         // eslint-disable-next-line no-loop-func
-        const data = new Uint8Array(28 * 14 * 3).fill(0).map((_, j) => (j % 3 === i ? 255 : 0));
+        const data = new Uint8Array(LIGHTHOUSE_WIDTH * LIGHTHOUSE_HEIGHT * 3).map((_, j) => (j % 3 === i ? 255 : 0));
         const msg = await lh.sendDisplay(data);
 
         // eslint-disable-next-line no-console
