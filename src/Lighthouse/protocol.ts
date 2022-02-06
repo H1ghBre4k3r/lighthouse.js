@@ -23,3 +23,16 @@ export interface LighthouseEvent<P> {
     PAYL: P;
     WARNINGS: string[];
 }
+
+export interface InputEvent {
+    src: number;
+    dwn: number;
+}
+
+export interface KeyEvent extends InputEvent {
+    key: number;
+}
+
+export interface ControllerEvent extends InputEvent {
+    btn: number;
+}

@@ -1,7 +1,7 @@
 import { decode, encode } from "@msgpack/msgpack";
 import { v4 as uuid } from "uuid";
 import { WebSocket } from "ws";
-import { LighthouseAuth, LighthousePath, LighthouseRequest, LighthouseEvent, LighthouseVerb } from "./protocol";
+import { LighthouseAuth, LighthousePath, LighthouseRequest, LighthouseEvent, LighthouseVerb, KeyEvent, ControllerEvent } from "./protocol";
 
 type LighthouseEventHandler<P> = (event: LighthouseEvent<P>) => void;
 
@@ -43,6 +43,26 @@ export class LighthouseWebsocket<U extends string> {
 
     public async requestStream(): Promise<LighthouseEvent<unknown>> {
         return await this.send("STREAM", ["user", this.auth.USER, "model"], undefined);
+    }
+
+    public addKeyListener(cb: (event: KeyEvent) => void): void {
+        this.registerEventHandler(raw => {
+            const event = raw as LighthouseEvent<KeyEvent>;
+            const input = event.PAYL;
+            if (input.src && input.key && input.dwn) {
+                cb(input);
+            }
+        });
+    }
+
+    public addControllerListener(cb: (event: ControllerEvent) => void): void {
+        this.registerEventHandler(raw => {
+            const event = raw as LighthouseEvent<ControllerEvent>;
+            const input = event.PAYL;
+            if (input.src && input.btn && input.dwn) {
+                cb(input);
+            }
+        });
     }
 
     private async send<P>(verb: LighthouseVerb, path: LighthousePath<U>, payload: P): Promise<LighthouseEvent<unknown>> {
