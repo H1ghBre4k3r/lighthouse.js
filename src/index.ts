@@ -1,3 +1,3 @@
-export * from "./Lighthouse/LighthouseWebsocket";
-export * from "./Lighthouse/constants";
-export * from "./Lighthouse/types";
+export * from "./lighthouse/websocket";
+export * from "./lighthouse/constants";
+export * from "./lighthouse/protocol";

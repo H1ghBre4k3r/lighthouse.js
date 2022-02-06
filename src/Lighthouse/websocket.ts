@@ -1,7 +1,7 @@
 import { decode, encode } from "@msgpack/msgpack";
 import { v4 as uuid } from "uuid";
 import { WebSocket } from "ws";
-import { LighthouseAuth, LighthousePath, LighthouseRequest, LighthouseEvent, LighthouseVerb } from "./types";
+import { LighthouseAuth, LighthousePath, LighthouseRequest, LighthouseEvent, LighthouseVerb } from "./protocol";
 
 type LighthouseEventHandler<P> = (event: LighthouseEvent<P>) => void;
 
