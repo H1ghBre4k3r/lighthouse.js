@@ -33,7 +33,7 @@
     "homepage": "https://github.com/H1ghBre4k3r/lighthouse.js#readme",
     "devDependencies": {
         "@types/node": "^20.1.0",
-        "@types/uuid": "^9.0.0",
+        "@types/uuid": "^10.0.0",
         "@typescript-eslint/eslint-plugin": "^7.0.1",
         "@typescript-eslint/parser": "^7.0.1",
         "dts-bundle-webpack": "^1.0.2",
