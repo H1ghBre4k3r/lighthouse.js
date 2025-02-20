@@ -51,7 +51,7 @@
         "webpack-node-externals": "^3.0.0"
     },
     "dependencies": {
-        "@msgpack/msgpack": "^2.7.1",
+        "@msgpack/msgpack": "^3.0.1",
         "@types/ws": "^8.2.2",
         "uuid": "^11.0.2",
         "ws": "^8.4.0"
