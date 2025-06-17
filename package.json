@@ -32,7 +32,7 @@
     },
     "homepage": "https://github.com/H1ghBre4k3r/lighthouse.js#readme",
     "devDependencies": {
-        "@types/node": "^22.0.0",
+        "@types/node": "^24.0.3",
         "@types/uuid": "^10.0.0",
         "@typescript-eslint/eslint-plugin": "^8.0.0",
         "@typescript-eslint/parser": "^8.0.0",
